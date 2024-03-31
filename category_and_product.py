@@ -10,9 +10,12 @@ class Category:
     def __init__(self, name, description, product):
         self.name = name
         self.description = description
+
         self.product = product
         Category.total_categories += 1
-        Category.total_unique_products += len(product)
+        unique_products = set(product)
+        Category.total_unique_products += len(unique_products)
+
 
 class Product:
     name = str
