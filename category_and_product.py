@@ -7,16 +7,18 @@ class Category:
     total_categories = 0
     total_unique_products = 0
 
-    def __init__(self, name, description):
+    def __init__(self, name, description, products):
         self.name = name
         self.description = description
-        self.__products = set()
+        self.__products = products
         Category.total_categories += 1
+        unique_products = set(self.__products)
+        Category.total_unique_products = len(unique_products)
+
     def add_product(self, product):
-        self.__products.add(product)
-
-        Category.total_unique_products = len(self.__products)
-
+        self.__products.append(product)
+        unique_products = set(self.__products)
+        Category.total_unique_products = len(unique_products)
     @property
     def products(self):
         product_info = []
@@ -24,9 +26,6 @@ class Category:
             info = f'{product.name}, {product.price} руб. Остаток: {product.count_in_stock} шт.'
             product_info.append(info)
         return "\n".join(product_info)
-
-
-
 
 class Product:
     name = str
@@ -41,8 +40,8 @@ class Product:
         self.count_in_stock = int(count_in_stock)
 
     @classmethod
-    def create_product(cls, name, description, price, count_in_stock):
-        return cls(name, description, price, count_in_stock)
+    def create_product(cls, **kwargs):
+        return cls(**kwargs)
 
     @property
     def price(self):
@@ -55,20 +54,21 @@ class Product:
         else:
             self.__price = value
 
-one_1 = Category("Electronics", "Electronic devices")
-two_2 = Product("Laptop", "High-performance laptop", 1500, 4)
-two_3 = Product("Mouse", "Wireless mouse", 30.00, 20)
-two_4 = Product("Laptop", "High-performance laptop", 1500, 4)
-one_1.add_product(two_2)
-one_1.add_product(two_3)
-one_1.add_product(two_4)
 
-print(one_1.products)
+# Создание продуктов
+two = Product('mouse', 'wireless mouse', 32.2, 2)
+four = Product('keyboard', 'wireless keyboard', 2222.2, 6)
+three = Product('test1', 'test2', 55.5, 7)
+five = Product('test3', 'test4', 32.2, 2)
+
+# Создание категории с продуктами
+one = Category('Electronics', 'Electronic devices', [two, three, four, five])
+
+print(one.products)
 
 # Проверка сеттера price
-two_2.price = 1700.0  # Изменение цены на корректное значение
-print(f"Новая цена для {two_2.name}: {two_2.price}")
+two.price = 50.2  # Изменение цены на корректное значение
+print(f"Новая цена для {two.name}: {two.price}")
 
-two_2.price = -5.0  # Попытка установить некорректное значение цены
-print(f"Новая цена для {two_2.name}: {two_2.price}")
-
+two.price = -5.0  # Попытка установить некорректное значение цены
+print(f"Новая цена для {two.name}: {two.price}")
