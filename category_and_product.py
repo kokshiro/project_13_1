@@ -22,9 +22,12 @@ class Category:
         return sum(product.count_in_stock for product in self.__products)
 
     def add_product(self, product):
-        self.__products.append(product)
-        unique_products = set(self.__products)
-        Category.total_unique_products = len(unique_products)
+        if isinstance(product, Product):
+            self.__products.append(product)
+            unique_products = set(self.__products)
+            Category.total_unique_products = len(unique_products)
+        else:
+            raise TypeError("Only Product or its subclasses can be added to the category")
     @property
     def products(self):
         product_info = []
@@ -66,10 +69,26 @@ class Product:
         return f"{self.name}, {self.price} руб. Остаток: {self.count_in_stock} шт."
 
     def __add__(self, other):
-        if isinstance(other, Product):
+        if isinstance(other, self.__class__):
             return self.price * self.count_in_stock + other.price * other.count_in_stock
         else:
             raise TypeError("Unsupported operand type for +")
+
+
+class Smartphone(Product):
+    def __init__(self, name, description, price, count_in_stock, performance, model, memory, color):
+        super().__init__(name, description, price, count_in_stock)
+        self.perfomance = performance
+        self.model = model
+        self.memory = memory
+        self.color = color
+
+class LawnGrass(Product):
+    def __init__(self, name, description, price, count_in_stock, manufacturer, germination_time, color):
+        super().__init__(name, description, price, count_in_stock)
+        self.manufacturer = manufacturer
+        self.germination_time = germination_time
+        self.color = color
 
 
 
@@ -79,21 +98,38 @@ four = Product('keyboard', 'wireless keyboard', 2222.2, 6)
 three = Product('test1', 'test2', 55.5, 7)
 five = Product('test3', 'test4', 32.2, 2)
 
-# Создание категории с продуктами
-one = Category('Electronics', 'Electronic devices', [two, three, four, five])
+# Создание смартфона
+iphone = Smartphone('iPhone 13', 'Latest iPhone model', 999.99, 10, 'A15 Bionic', 'iPhone 13', 128, 'Midnight')
 
-print(one.products)
+# Создание газонной травы
+grass = LawnGrass('Premium Grass', 'High-quality lawn grass', 19.99, 50, 'GreenCo', 7, 'Green')
+
+# Создание категории с продуктами
+electronics = Category('Electronics', 'Electronic devices', [two, three, four, five])
+smartphones = Category('Smartphones', 'Mobile phones', [iphone])
+gardening = Category('Gardening', 'Gardening supplies', [grass])
+
+print("Продукты в категории 'Electronics':")
+print(electronics.products)
+
+print("\nИнформация о смартфоне:")
+print(iphone)
+
+print("\nИнформация о газонной траве:")
+print(grass)
 
 # Проверка сеттера price
 two.price = 50.2  # Изменение цены на корректное значение
-print(f"Новая цена для {two.name}: {two.price}")
+print(f"\nНовая цена для {two.name}: {two.price}")
 
 two.price = -5.0  # Попытка установить некорректное значение цены
 print(f"Новая цена для {two.name}: {two.price}")
 
+print("\nИнформация о категории 'Electronics':")
+print(electronics)
 
-print(one)
+print("\nИнформация о продукте 'mouse':")
 print(two)
 
-result = two + four
-print(result)
+print(f"\nОбщее количество категорий: {Category.total_categories}")
+print(f"Общее количество уникальных продуктов: {Category.total_unique_products}")
