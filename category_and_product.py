@@ -1,3 +1,32 @@
+from abc import ABC, abstractmethod
+
+class AbstractProduct(ABC):
+    @abstractmethod
+    def __init__(self, name, desctiption, price, count_in_stock):
+        self.name = name
+        self.desctiprion = desctiption
+        self.price = price
+        self.count_in_stock = count_in_stock
+    @abstractmethod
+    def __add__(self, other):
+        pass
+
+
+class LogCreationMixin:
+    def __repr__(self):
+        # Создаем пустой список для хранения строк с атрибутами
+        attribute_strings = []
+
+        # Проходим по всем атрибутам объекта
+        for attribute_name, attribute_value in self.__dict__.items():
+            # Создаем строку в формате "имя_атрибута=значение_атрибута"
+            attribute_string = f"{attribute_name}={attribute_value!r}"
+            # Добавляем строку с атрибутом в список
+            attribute_strings.append(attribute_string)
+
+        attributes = ' ,'.join(attribute_strings)
+        return f"{self.__class__.__name__}({attributes})"
+
 class Category:
 
     name = str
@@ -36,19 +65,13 @@ class Category:
             product_info.append(info)
         return "\n".join(product_info)
 
-
-
-class Product:
+class Product(AbstractProduct, LogCreationMixin):
     name = str
     description = str
     price = float
     count_in_stock = int
-
     def __init__(self, name, description, price, count_in_stock):
-        self.name = name
-        self.description = description
-        self.__price = float(price)
-        self.count_in_stock = int(count_in_stock)
+        super().__init__(name, description, price, count_in_stock)
 
     @classmethod
     def create_product(cls, **kwargs):
@@ -78,6 +101,7 @@ class Product:
 class Smartphone(Product):
     def __init__(self, name, description, price, count_in_stock, performance, model, memory, color):
         super().__init__(name, description, price, count_in_stock)
+
         self.perfomance = performance
         self.model = model
         self.memory = memory
