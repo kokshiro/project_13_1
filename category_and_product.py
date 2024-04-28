@@ -10,8 +10,6 @@ class AbstractProduct(ABC):
     @abstractmethod
     def __add__(self, other):
         pass
-
-
 class LogCreationMixin:
     def __repr__(self):
         # Создаем пустой список для хранения строк с атрибутами
@@ -43,6 +41,7 @@ class Category:
         Category.total_categories += 1
         unique_products = set(self.__products)
         Category.total_unique_products = len(unique_products)
+        print(repr(self))
 
     def __str__(self):
         return f"{self.name}, количество продуктов: {len(self)} шт."
@@ -72,6 +71,7 @@ class Product(AbstractProduct, LogCreationMixin):
     count_in_stock = int
     def __init__(self, name, description, price, count_in_stock):
         super().__init__(name, description, price, count_in_stock)
+        print(repr(self))
 
     @classmethod
     def create_product(cls, **kwargs):
