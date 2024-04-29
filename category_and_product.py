@@ -3,6 +3,8 @@ from abc import ABC, abstractmethod
 class AbstractProduct(ABC):
     @abstractmethod
     def __init__(self, name, desctiption, price, count_in_stock):
+        if count_in_stock == 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
         self.name = name
         self.desctiprion = desctiption
         self.price = price
@@ -10,6 +12,7 @@ class AbstractProduct(ABC):
     @abstractmethod
     def __add__(self, other):
         pass
+
 class LogCreationMixin:
     def __repr__(self):
         # Создаем пустой список для хранения строк с атрибутами
@@ -63,6 +66,13 @@ class Category:
             info = f'{product.name}, {product.price} руб. Остаток: {product.count_in_stock} шт.'
             product_info.append(info)
         return "\n".join(product_info)
+
+    def average_price(self):
+        total_price = sum(product.price for product in self.__products)
+        try:
+            return total_price / len(self.__products)
+        except ZeroDivisionError:
+            return 0
 
 class Product(AbstractProduct, LogCreationMixin):
     name = str
